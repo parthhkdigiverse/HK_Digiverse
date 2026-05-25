@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Primary Meta Tags -->
+  <title>HariKrushn DigiVerse LLP — Full-Spectrum Digital Agency</title>
+  <meta name="title" content="HariKrushn DigiVerse LLP — Full-Spectrum Digital Agency">
+  <meta name="description"
+    content="Empowering brands through creative design, engineering, marketing, and strategy. Multi-disciplinary agency based in Ahmedabad, India.">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://hkdigiverse.com/">
+  <meta property="og:title" content="HariKrushn DigiVerse LLP — Full-Spectrum Digital Agency">
+  <meta property="og:description"
+    content="Empowering brands through creative design, engineering, marketing, and strategy.">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;500;600;700&family=Cabinet+Grotesk:wght@300;400;500;700;800&family=Space+Mono:wght@400;700&display=swap"
+    rel="stylesheet">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/x-icon" href="/favicon.ico?v=2">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png?v=2">
+  <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png?v=2">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="css/style.css">
+
+  <!-- Dynamic Config -->
+  <script>
+    // Dynamically calculate the backend API URL based on the current hostname
+    // Assuming the backend is on the port defined in .env (default 8000)
+    window.API_BASE_URL = `${window.location.protocol}//${window.location.hostname}:8000`;
+  </script>
+</head>
+
+<body>
+
+  <!-- Background Elements -->
+  <canvas id="stars-canvas"></canvas>
+  <div id="scroll-progress"></div>
+  <div id="cursor-dot"></div>
+  <div id="cursor-ring"></div>
+
+  <!-- ── Navigation ── -->
+  <nav id="main-nav">
+    <a href="#" class="logo magnetic" id="nav-logo">
+      <img src="assets/logo.png" alt="HariKrushn DigiVerse Logo" class="logo-icon-img" width="36" height="36">
+      <span>HariKrushn <span class="text-gradient">DigiVerse</span></span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#services" class="nav-link">Services</a></li>
+      <li><a href="#about" class="nav-link">About</a></li>
+      <li><a href="#portfolio" class="nav-link">Work</a></li>
+      <li><a href="#contact" class="nav-link">Contact</a></li>
+    </ul>
+    <a href="#contact" class="btn btn-primary magnetic" id="nav-cta">Start a Project</a>
+  </nav>
+
+  <!-- ── Hero Section ── -->
+  <section class="hero" id="home">
+    <div class="hero-grid">
+      <div class="hero-content reveal">
+        <span class="text-mono section-eyebrow">Digital Excellence · Est. 2020</span>
+        <h1 class="split-text">We Shape <span class="text-gradient">Digital</span> Futures.</h1>
+        <p>HariKrushn DigiVerse LLP is a multi-disciplinary agency powering brands through creative design, engineering,
+          marketing, and strategy — all under one roof.</p>
+        <div class="hero-actions">
+          <a href="#portfolio" class="btn btn-primary magnetic">View Our Work</a>
+          <a href="#services" class="btn btn-outline magnetic">Our Services</a>
+        </div>
+      </div>
+      <div class="hero-visual reveal">
+        <div class="device-stack">
+          <div class="device d-main">
+            <!-- Screen content simulation -->
+            <div style="padding: 20px; display: flex; flex-direction: column; gap: 10px;">
+              <div style="width: 100%; height: 8px; background: var(--border-light); border-radius: 4px;"></div>
+              <div style="width: 60%; height: 8px; background: var(--border-light); border-radius: 4px;"></div>
+              <div
+                style="margin-top: 20px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; align-items: flex-end; height: 100px;">
+                <div style="height: 40%; background: var(--accent-lime); border-radius: 4px;"></div>
+                <div style="height: 80%; background: var(--accent-mint); border-radius: 4px;"></div>
+                <div style="height: 60%; background: var(--accent-pink); border-radius: 4px;"></div>
+                <div style="height: 90%; background: var(--accent-violet); border-radius: 4px;"></div>
+              </div>
+            </div>
+          </div>
+          <div class="device d-side">
+            <div style="padding: 15px;">
+              <div
+                style="width: 40px; height: 40px; background: rgba(77, 255, 212, 0.1); border-radius: 8px; margin-bottom: 10px; display: flex; align-items: center; justify-content: center;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent-mint)"
+                  stroke-width="2">
+                  <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+                </svg>
+              </div>
+              <div style="width: 80%; height: 4px; background: var(--border-light); margin-bottom: 5px;"></div>
+              <div style="width: 50%; height: 4px; background: var(--border-light);"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Ticker ── -->
+  <div class="ticker">
+    <div class="ticker-track">
+      <span class="ticker-item">Web Development ✦</span>
+      <span class="ticker-item">Social Media Management ✦</span>
+      <span class="ticker-item">Mobile Applications ✦</span>
+      <span class="ticker-item">Digital Marketing ✦</span>
+      <span class="ticker-item">Brand Strategy ✦</span>
+      <span class="ticker-item">Cloud Services ✦</span>
+    </div>
+  </div>
+
+  <!-- ── Services Section ── -->
+  <section id="services">
+    <div class="reveal">
+      <span class="text-mono section-eyebrow">// Expertise</span>
+      <h2 class="section-title split-text">Full-spectrum services. <br>Zero compromises.</h2>
+    </div>
+
+    <div class="services-grid">
+      <div class="service-card reveal tilt">
+        <span class="service-num">01 —</span>
+        <h3 class="service-title">Web Engineering</h3>
+        <p class="service-desc">Blazing-fast, pixel-perfect websites and web apps — from landing pages to complex SaaS
+          platforms.</p>
+      </div>
+      <div class="service-card reveal tilt">
+        <span class="service-num">02 —</span>
+        <h3 class="service-title">Social Media Management</h3>
+        <p class="service-desc">Strategic content creation, community building, and data-driven campaigns to elevate
+          your brand's presence.</p>
+      </div>
+      <div class="service-card reveal tilt">
+        <span class="service-num">03 —</span>
+        <h3 class="service-title">Mobile Solutions</h3>
+        <p class="service-desc">Native and cross-platform iOS & Android apps built for performance, scale, and seamless
+          UX.</p>
+      </div>
+      <div class="service-card reveal tilt">
+        <span class="service-num">04 —</span>
+        <h3 class="service-title">Digital Marketing</h3>
+        <p class="service-desc">SEO, PPC, social, content — data-driven campaigns engineered for reach, engagement, and
+          ROI.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── About Section ── -->
+  <section id="about">
+    <div class="about-layout">
+      <div class="reveal">
+        <span class="text-mono section-eyebrow">// Who We Are</span>
+        <h2 class="section-title split-text">We build digital <br><span class="text-gradient">experiences.</span></h2>
+        <p style="color: var(--text-secondary); margin-bottom: 24px; font-size: 1.1rem;">
+          At HariKrushn DigiVerse LLP, we blend creativity with technical excellence to deliver solutions that drive
+          real business growth. We are a collective of designers, engineers, and strategists passionate about pushing
+          boundaries.
+        </p>
+        <p style="color: var(--text-secondary); margin-bottom: 40px; font-size: 1.1rem;">
+          Based in Ahmedabad, we partner with ambitious brands globally to transform their digital presence and create
+          meaningful connections with their audience.
+        </p>
+        <div style="display: flex; gap: 40px; margin-top: 48px; flex-wrap: wrap;">
+          <div>
+            <h3 class="text-gradient" style="font-size: 2.5rem; margin-bottom: 8px;">50+</h3>
+            <span class="text-mono" style="color: var(--text-muted);">Projects</span>
+          </div>
+          <div>
+            <h3 class="text-gradient" style="font-size: 2.5rem; margin-bottom: 8px;">15+</h3>
+            <span class="text-mono" style="color: var(--text-muted);">Experts</span>
+          </div>
+          <div>
+            <h3 class="text-gradient" style="font-size: 2.5rem; margin-bottom: 8px;">100%</h3>
+            <span class="text-mono" style="color: var(--text-muted);">Commitment</span>
+          </div>
+        </div>
+      </div>
+      <div class="reveal tilt" style="display: flex; justify-content: center; align-items: center;">
+        <div
+          style="width: 100%; max-width: 400px; aspect-ratio: 4/5; background: var(--bg-panel); border: 1px solid var(--border-light); border-radius: 20px; position: relative; overflow: hidden; padding: 40px; display: flex; flex-direction: column; justify-content: flex-end;">
+          <div
+            style="position: absolute; inset: 0; background: linear-gradient(135deg, rgba(232, 255, 71, 0.15), rgba(77, 255, 212, 0.05)); z-index: 0;">
+          </div>
+          <div style="position: relative; z-index: 1;">
+            <h3 style="font-family: var(--font-display); font-size: 2rem; margin-bottom: 16px;">Our Culture</h3>
+            <p style="color: var(--text-secondary); font-size: 1rem;">Innovation, collaboration, and a relentless
+              pursuit of quality in everything we build.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Portfolio Section ── -->
+  <section id="portfolio">
+    <div class="reveal">
+      <span class="text-mono section-eyebrow">// Showcase</span>
+      <h2 class="section-title">Selected projects &<br><span class="text-gradient">case studies.</span></h2>
+    </div>
+
+    <div class="portfolio-filters reveal">
+      <button class="filter-btn active" data-filter="all">All Work</button>
+      <button class="filter-btn" data-filter="web">Web Dev</button>
+      <button class="filter-btn" data-filter="brand">Branding</button>
+      <button class="filter-btn" data-filter="app">Mobile</button>
+    </div>
+
+    <div class="portfolio-grid">
+      <div class="project-card reveal tilt" data-category="web"
+        style="background: linear-gradient(135deg, #0d1f38, #071020);">
+        <div class="project-overlay">
+          <span class="text-mono" style="color: var(--accent-lime);">E-Commerce</span>
+          <h3 class="service-title">ShopNova Platform</h3>
+          <p class="service-desc">A complete overhaul of a legacy marketplace into a modern SaaS platform.</p>
+        </div>
+      </div>
+      <div class="project-card reveal tilt" data-category="brand"
+        style="background: linear-gradient(135deg, #1a0f20, #100c18);">
+        <div class="project-overlay">
+          <span class="text-mono" style="color: var(--accent-pink);">Identity</span>
+          <h3 class="service-title">GreenLeaf Organic</h3>
+          <p class="service-desc">Strategic rebranding and packaging design for a premium organic brand.</p>
+        </div>
+      </div>
+      <div class="project-card reveal tilt" data-category="app"
+        style="background: linear-gradient(135deg, #0f1a30, #080d18);">
+        <div class="project-overlay">
+          <span class="text-mono" style="color: var(--accent-mint);">Fintech</span>
+          <h3 class="service-title">SprintPay Wallet</h3>
+          <p class="service-desc">Designing the future of contactless payments for the next generation.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Contact Section ── -->
+  <section id="contact">
+    <div class="contact-layout">
+      <div class="reveal">
+        <span class="text-mono section-eyebrow">// Connect</span>
+        <h2 class="section-title">Ready to build<br>something <span class="text-gradient">great?</span></h2>
+        <p style="color: var(--text-secondary); margin-bottom: 40px;">Drop us a message and one of our team members will
+          get back to you within 24 hours.</p>
+
+        <div style="display: flex; flex-direction: column; gap: 20px;">
+          <div>
+            <span class="text-mono" style="font-size: 0.6rem; color: var(--text-muted);">Email Us</span>
+            <p>hkdigiverse@gmail.com</p>
+          </div>
+          <div>
+            <span class="text-mono" style="font-size: 0.6rem; color: var(--text-muted);">Office</span>
+            <p><a href="https://maps.app.goo.gl/oBNGZ3WQpkijmP2y8" target="_blank" rel="noopener noreferrer"
+                style="color: inherit; text-decoration: none; transition: opacity 0.3s;"
+                onmouseover="this.style.opacity=0.7" onmouseout="this.style.opacity=1">501-502, Silver Trade Center,
+                Mota Varachha, Surat. </a></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="reveal">
+        <form class="contact-form">
+          <div class="form-group"> hhy7u7u;0mmnnn n
+            <label for="name">Full Name</label>
+            <input type="text" id="name" class="form-control" placeholder="Arjun Sharma" required>
+          </div>
+          <div class="form-group">
+            <label for="email">Email Address</label>
+            <input type="email" id="email" class="form-control" placeholder="arjun@company.com" required>
+          </div>
+          <div class="form-group">
+            <label for="service">Interested Service</label>
+            <select id="service" class="form-control">
+              <option value="web">Web Engineering</option>
+              <option value="smm">Social Media Management</option>
+              <option value="mobile">Mobile Solutions</option>
+              <option value="marketing">Digital Marketing</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="message">Message</label>
+            <textarea id="message" class="form-control" rows="5"
+              placeholder="Tell us about your project goals..."></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary" style="width: 100%;">Send Message</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Footer ── -->
+  <footer>
+    <a href="#" class="logo">
+      <img src="assets/logo.png" alt="HariKrushn DigiVerse Logo" class="logo-icon-img" width="36" height="36">
+      <span>HariKrushn <span class="text-gradient">DigiVerse LLP</span></span>
+    </a>
+    <p class="copyright">© 2026 HariKrushn DigiVerse LLP. All rights reserved.</p>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/main.js"></script>
+</body>
+
+</html>
