@@ -1,18 +1,23 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 import os
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 
 from .schemas import ContactRequest
 from .config import settings
 
 app = FastAPI(title=settings.app_name)
 
-# Enable CORS for local development
+# Parse CORS origins from settings
+origins = [origin.strip() for origin in settings.cors_origins.split(",") if origin.strip()]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -20,12 +25,41 @@ app.add_middleware(
 
 # --- API Routes ---
 
+def send_email_task(name: str, email: str, service: str, message: str):
+    if not settings.smtp_user or not settings.smtp_password:
+        print("SMTP credentials not configured. Email not sent.")
+        return
+        
+    msg = MIMEMultipart()
+    msg['From'] = settings.smtp_user
+    msg['To'] = settings.email_to
+    msg['Subject'] = f"New Contact Request: {name} - {service}"
+    
+    body = f"Name: {name}\nEmail: {email}\nService: {service}\n\nMessage:\n{message}"
+    msg.attach(MIMEText(body, 'plain'))
+    
+    try:
+        server = smtplib.SMTP(settings.smtp_server, settings.smtp_port)
+        server.starttls()
+        server.login(settings.smtp_user, settings.smtp_password)
+        server.send_message(msg)
+        server.quit()
+        print("Email sent successfully.")
+    except Exception as e:
+        print(f"Failed to send email: {e}")
+
 @app.post("/api/contact")
-async def contact_form(request: ContactRequest):
-    # In a real app, you would send an email or save to a database
+async def contact_form(request: ContactRequest, background_tasks: BackgroundTasks):
     print(f"Received contact request from {request.name} ({request.email})")
-    print(f"Service interested: {request.service}")
-    print(f"Message: {request.message}")
+    
+    # Run the email sending process in the background
+    background_tasks.add_task(
+        send_email_task, 
+        request.name, 
+        request.email, 
+        request.service, 
+        request.message
+    )
     
     return {"status": "success", "message": "Your message has been received. We will get back to you shortly!"}
 

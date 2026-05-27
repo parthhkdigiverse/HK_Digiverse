@@ -7,6 +7,9 @@ class Settings(BaseSettings):
     debug: bool = True
     app_name: str = "HariKrushn DigiVerse"
     
+    # CORS Config (comma separated in .env if multiple)
+    cors_origins: str = "*"
+
     # SMTP Config
     smtp_server: str = "smtp.gmail.com"
     smtp_port: int = 587

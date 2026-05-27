@@ -292,29 +292,103 @@ class App {
     });
   }
 
-  // ── Portfolio Filter ──
+  // ── Portfolio Carousel + Filter ──
   initPortfolioFilter() {
-    const buttons = document.querySelectorAll('.filter-btn');
-    const projects = document.querySelectorAll('.project-card');
+    const track = document.getElementById('carousel-track');
+    const dotsContainer = document.getElementById('carousel-dots');
+    const prevBtn = document.getElementById('carousel-prev');
+    const nextBtn = document.getElementById('carousel-next');
+    const filterBtns = document.querySelectorAll('.filter-btn');
 
-    buttons.forEach(btn => {
+    if (!track) return;
+
+    const SLIDES_PER_VIEW = window.innerWidth <= 640 ? 1 : window.innerWidth <= 1024 ? 2 : 3;
+    let allSlides = Array.from(track.querySelectorAll('.carousel-slide'));
+    let visibleSlides = [...allSlides];
+    let currentIndex = 0;
+
+    const getSlideWidth = () => {
+      const slide = visibleSlides[0];
+      if (!slide) return 0;
+      return slide.offsetWidth + 24; // gap
+    };
+
+    const buildDots = () => {
+      dotsContainer.innerHTML = '';
+      const totalDots = Math.ceil(visibleSlides.length / SLIDES_PER_VIEW);
+      for (let i = 0; i < totalDots; i++) {
+        const dot = document.createElement('button');
+        dot.className = 'carousel-dot' + (i === Math.floor(currentIndex / SLIDES_PER_VIEW) ? ' active' : '');
+        dot.setAttribute('aria-label', `Go to slide group ${i + 1}`);
+        dot.addEventListener('click', () => goTo(i * SLIDES_PER_VIEW));
+        dotsContainer.appendChild(dot);
+      }
+    };
+
+    const updateDots = () => {
+      const dots = dotsContainer.querySelectorAll('.carousel-dot');
+      const activeGroup = Math.floor(currentIndex / SLIDES_PER_VIEW);
+      dots.forEach((d, i) => d.classList.toggle('active', i === activeGroup));
+    };
+
+    const updateArrows = () => {
+      if (prevBtn) prevBtn.disabled = currentIndex === 0;
+      if (nextBtn) nextBtn.disabled = currentIndex >= visibleSlides.length - SLIDES_PER_VIEW;
+    };
+
+    const goTo = (index) => {
+      const maxIndex = Math.max(0, visibleSlides.length - SLIDES_PER_VIEW);
+      currentIndex = Math.max(0, Math.min(index, maxIndex));
+      // Offset: how many slides from the start of the track
+      const visibleIndexInTrack = allSlides.indexOf(visibleSlides[currentIndex]);
+      const slideW = getSlideWidth();
+      track.style.transform = `translateX(-${visibleIndexInTrack * slideW}px)`;
+      updateDots();
+      updateArrows();
+    };
+
+    const applyFilter = (filter) => {
+      currentIndex = 0;
+      track.style.transform = 'translateX(0)';
+
+      allSlides.forEach(slide => {
+        const card = slide.querySelector('.project-card');
+        const category = card ? card.dataset.category : '';
+        if (filter === 'all' || category === filter) {
+          slide.classList.remove('hide');
+        } else {
+          slide.classList.add('hide');
+        }
+      });
+
+      visibleSlides = allSlides.filter(s => !s.classList.contains('hide'));
+      buildDots();
+      updateArrows();
+    };
+
+    // Filter button clicks
+    filterBtns.forEach(btn => {
       btn.addEventListener('click', () => {
-        const category = btn.dataset.filter;
-
-        buttons.forEach(b => b.classList.remove('active'));
+        filterBtns.forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
-
-        projects.forEach(project => {
-          if (category === 'all' || project.dataset.category === category) {
-            project.classList.remove('hide');
-            project.classList.add('show');
-          } else {
-            project.classList.remove('show');
-            project.classList.add('hide');
-          }
-        });
+        applyFilter(btn.dataset.filter);
       });
     });
+
+    // Arrow clicks
+    if (prevBtn) prevBtn.addEventListener('click', () => goTo(currentIndex - SLIDES_PER_VIEW));
+    if (nextBtn) nextBtn.addEventListener('click', () => goTo(currentIndex + SLIDES_PER_VIEW));
+
+    // Swipe / touch support
+    let touchStartX = 0;
+    track.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; }, { passive: true });
+    track.addEventListener('touchend', e => {
+      const diff = touchStartX - e.changedTouches[0].clientX;
+      if (Math.abs(diff) > 50) diff > 0 ? goTo(currentIndex + 1) : goTo(currentIndex - 1);
+    });
+
+    // Init
+    applyFilter('all');
   }
 
   // ── Contact Form ──

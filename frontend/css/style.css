@@ -419,6 +419,7 @@ nav {
   display: flex;
   gap: 12px;
   margin-bottom: 48px;
+  flex-wrap: wrap;
 }
 
 .filter-btn {
@@ -429,6 +430,9 @@ nav {
   background: transparent;
   color: var(--text-secondary);
   cursor: pointer;
+  transition: all 0.3s var(--ease-out);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 .filter-btn.active {
@@ -437,12 +441,19 @@ nav {
   border-color: var(--accent-lime);
 }
 
-.portfolio-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-  gap: 24px;
+.filter-btn:hover:not(.active) {
+  border-color: var(--accent-lime);
+  color: var(--accent-lime);
 }
 
+/* Carousel */
+.carousel-wrapper {
+  position: relative;
+  overflow: hidden;
+  border-radius: 16px;
+}
+
+/* Project Card (used inside carousel slides) */
 .project-card {
   aspect-ratio: 4/3;
   position: relative;
@@ -489,14 +500,105 @@ nav {
   margin-top: 12px;
 }
 
-/* Portfolio Filter Styles */
-.project-card.hide {
-  display: none !important;
+.carousel-track {
+  display: flex;
+  gap: 24px;
+  transition: transform 0.6s var(--ease-out);
+  will-change: transform;
 }
 
-.project-card.show {
-  display: block !important;
-  animation: fadeInCard 0.5s var(--ease-out) forwards;
+.carousel-slide {
+  flex: 0 0 calc(33.333% - 16px);
+  min-width: 0;
+}
+
+@media (max-width: 1024px) {
+  .carousel-slide {
+    flex: 0 0 calc(50% - 12px);
+  }
+}
+
+@media (max-width: 640px) {
+  .carousel-slide {
+    flex: 0 0 100%;
+  }
+}
+
+.carousel-slide .project-card {
+  width: 100%;
+  height: 100%;
+}
+
+.carousel-slide.hidden-slide {
+  display: none;
+}
+
+/* Carousel Controls */
+.carousel-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  margin-top: 40px;
+}
+
+.carousel-arrow {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 1px solid var(--border-light);
+  background: var(--bg-panel);
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s var(--ease-out);
+  flex-shrink: 0;
+}
+
+.carousel-arrow:hover {
+  border-color: var(--accent-lime);
+  color: var(--accent-lime);
+  background: rgba(156, 219, 43, 0.08);
+  transform: scale(1.1);
+}
+
+.carousel-arrow:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.carousel-dots {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
+  max-width: 300px;
+}
+
+.carousel-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--border-light);
+  border: 1px solid var(--text-muted);
+  cursor: pointer;
+  transition: all 0.3s var(--ease-out);
+  flex-shrink: 0;
+}
+
+.carousel-dot.active {
+  background: var(--accent-lime);
+  border-color: var(--accent-lime);
+  transform: scale(1.4);
+}
+
+/* Portfolio Filter Styles — kept for slide toggling */
+.carousel-slide.hide {
+  display: none !important;
 }
 
 @keyframes fadeInCard {
