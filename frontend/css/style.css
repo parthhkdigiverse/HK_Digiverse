@@ -464,6 +464,22 @@ nav {
   transition: transform 0.6s var(--ease-out), border-color 0.4s, box-shadow 0.4s;
 }
 
+/* Project image inside card */
+.project-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s var(--ease-out), opacity 0.4s;
+  opacity: 0.8;
+}
+
+.project-card:hover .project-img {
+  transform: scale(1.06);
+  opacity: 0.5;
+}
+
 .project-card:hover {
   transform: translateY(-8px) scale(1.02);
   border-color: var(--accent-lime);
