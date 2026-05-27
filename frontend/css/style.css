@@ -529,7 +529,14 @@ nav {
   height: 100%;
 }
 
-.carousel-slide.hidden-slide {
+/* Clones used for infinite scroll — never hidden */
+.carousel-clone {
+  flex-shrink: 0;
+  pointer-events: auto;
+}
+
+/* hide class only applies to real slides (not clones) via JS */
+.carousel-slide.hide:not(.carousel-clone) {
   display: none;
 }
 

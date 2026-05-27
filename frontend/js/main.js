@@ -292,7 +292,7 @@ class App {
     });
   }
 
-  // ── Portfolio Carousel + Filter ──
+  // ── Portfolio Carousel + Filter (Infinite Scroll, dot-synced) ──
   initPortfolioFilter() {
     const track = document.getElementById('carousel-track');
     const dotsContainer = document.getElementById('carousel-dots');
@@ -302,92 +302,145 @@ class App {
 
     if (!track) return;
 
-    const SLIDES_PER_VIEW = window.innerWidth <= 640 ? 1 : window.innerWidth <= 1024 ? 2 : 3;
-    let allSlides = Array.from(track.querySelectorAll('.carousel-slide'));
-    let visibleSlides = [...allSlides];
-    let currentIndex = 0;
+    const getSPV = () => window.innerWidth <= 640 ? 1 : window.innerWidth <= 1024 ? 2 : 3;
 
-    const getSlideWidth = () => {
-      const slide = visibleSlides[0];
-      if (!slide) return 0;
-      return slide.offsetWidth + 24; // gap
+    const originalSlides = Array.from(track.querySelectorAll('.carousel-slide:not(.carousel-clone)'));
+    let realSlides = [];
+    let pageIndex = 0;       // current PAGE (not slide) index
+    let totalPages = 0;
+    let SPV = getSPV();
+    let busy = false;
+
+    /* ── helpers ── */
+    const slideW = () => {
+      const s = track.querySelector('.carousel-slide:not(.carousel-clone)');
+      return s ? s.getBoundingClientRect().width + 24 : 0;
     };
 
+    const pageToSlideIndex = p => ((p % realSlides.length) + realSlides.length) % realSlides.length;
+
+    /* ── clone management ── */
+    const rebuildClones = () => {
+      track.querySelectorAll('.carousel-clone').forEach(c => c.remove());
+      if (!realSlides.length) return;
+
+      // Prepend one full clone set + one extra page worth (so prev never hits nothing)
+      const before = [...realSlides, ...realSlides].map(s => {
+        const c = s.cloneNode(true);
+        c.classList.add('carousel-clone');
+        return c;
+      });
+      // Append one full clone set + one extra page
+      const after = [...realSlides, ...realSlides].map(s => {
+        const c = s.cloneNode(true);
+        c.classList.add('carousel-clone');
+        return c;
+      });
+
+      realSlides[0].before(...before);
+      realSlides[realSlides.length - 1].after(...after);
+    };
+
+    /* ── silent jump (no animation) ── */
+    const silentJump = (absoluteSlideIndex) => {
+      track.style.transition = 'none';
+      track.style.transform = `translateX(-${absoluteSlideIndex * slideW()}px)`;
+      track.offsetHeight; // force reflow
+      track.style.transition = '';
+    };
+
+    /* ── dots ── */
     const buildDots = () => {
       dotsContainer.innerHTML = '';
-      const totalDots = Math.ceil(visibleSlides.length / SLIDES_PER_VIEW);
-      for (let i = 0; i < totalDots; i++) {
+      for (let i = 0; i < totalPages; i++) {
         const dot = document.createElement('button');
-        dot.className = 'carousel-dot' + (i === Math.floor(currentIndex / SLIDES_PER_VIEW) ? ' active' : '');
-        dot.setAttribute('aria-label', `Go to slide group ${i + 1}`);
-        dot.addEventListener('click', () => goTo(i * SLIDES_PER_VIEW));
+        dot.className = 'carousel-dot' + (i === pageIndex ? ' active' : '');
+        dot.setAttribute('aria-label', `Page ${i + 1}`);
+        dot.addEventListener('click', () => navigate(i - pageIndex));
         dotsContainer.appendChild(dot);
       }
     };
 
-    const updateDots = () => {
-      const dots = dotsContainer.querySelectorAll('.carousel-dot');
-      const activeGroup = Math.floor(currentIndex / SLIDES_PER_VIEW);
-      dots.forEach((d, i) => d.classList.toggle('active', i === activeGroup));
+    const syncDots = () => {
+      dotsContainer.querySelectorAll('.carousel-dot').forEach((d, i) =>
+        d.classList.toggle('active', i === pageIndex)
+      );
     };
 
-    const updateArrows = () => {
-      if (prevBtn) prevBtn.disabled = currentIndex === 0;
-      if (nextBtn) nextBtn.disabled = currentIndex >= visibleSlides.length - SLIDES_PER_VIEW;
+    /* ── core navigate (delta = +1 or -1 page) ── */
+    const navigate = (delta) => {
+      if (busy || !realSlides.length) return;
+      busy = true;
+
+      const n = realSlides.length;
+      const clonePagesBefore = n * 2 / SPV | 0; // how many clone pages before real
+
+      // New page index (wrapped)
+      pageIndex = ((pageIndex + delta) % totalPages + totalPages) % totalPages;
+
+      // The absolute slide offset we want to show
+      // clones before real slides = n*2 slides → clonePagesBefore pages
+      const cloneSlidesBefore = n * 2; // we prepended n*2 clones
+      const absoluteSlide = cloneSlidesBefore + pageIndex * SPV;
+
+      track.style.transform = `translateX(-${absoluteSlide * slideW()}px)`;
+      syncDots();
+
+      // After animation: silently snap back to real position to keep buffer available
+      setTimeout(() => {
+        silentJump(cloneSlidesBefore + pageIndex * SPV);
+        busy = false;
+      }, 650);
     };
 
-    const goTo = (index) => {
-      const maxIndex = Math.max(0, visibleSlides.length - SLIDES_PER_VIEW);
-      currentIndex = Math.max(0, Math.min(index, maxIndex));
-      // Offset: how many slides from the start of the track
-      const visibleIndexInTrack = allSlides.indexOf(visibleSlides[currentIndex]);
-      const slideW = getSlideWidth();
-      track.style.transform = `translateX(-${visibleIndexInTrack * slideW}px)`;
-      updateDots();
-      updateArrows();
-    };
-
+    /* ── filter + init ── */
     const applyFilter = (filter) => {
-      currentIndex = 0;
-      track.style.transform = 'translateX(0)';
+      pageIndex = 0;
 
-      allSlides.forEach(slide => {
-        const card = slide.querySelector('.project-card');
-        const category = card ? card.dataset.category : '';
-        if (filter === 'all' || category === filter) {
-          slide.classList.remove('hide');
-        } else {
-          slide.classList.add('hide');
-        }
+      originalSlides.forEach(s => {
+        const cat = s.querySelector('.project-card')?.dataset.category ?? '';
+        s.classList.toggle('hide', filter !== 'all' && cat !== filter);
       });
 
-      visibleSlides = allSlides.filter(s => !s.classList.contains('hide'));
+      realSlides = originalSlides.filter(s => !s.classList.contains('hide'));
+      SPV = getSPV();
+      totalPages = Math.ceil(realSlides.length / SPV);
+
+      rebuildClones();
       buildDots();
-      updateArrows();
+
+      // Silent-jump to page 0 of real slides (after clones)
+      requestAnimationFrame(() => {
+        const cloneSlidesBefore = realSlides.length * 2;
+        silentJump(cloneSlidesBefore);
+      });
     };
 
-    // Filter button clicks
-    filterBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
-        filterBtns.forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        applyFilter(btn.dataset.filter);
-      });
-    });
+    /* ── event listeners ── */
+    filterBtns.forEach(btn => btn.addEventListener('click', () => {
+      filterBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      applyFilter(btn.dataset.filter);
+    }));
 
-    // Arrow clicks
-    if (prevBtn) prevBtn.addEventListener('click', () => goTo(currentIndex - SLIDES_PER_VIEW));
-    if (nextBtn) nextBtn.addEventListener('click', () => goTo(currentIndex + SLIDES_PER_VIEW));
+    prevBtn?.addEventListener('click', () => navigate(-1));
+    nextBtn?.addEventListener('click', () => navigate(1));
 
-    // Swipe / touch support
-    let touchStartX = 0;
-    track.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; }, { passive: true });
+    let touchX = 0;
+    track.addEventListener('touchstart', e => { touchX = e.touches[0].clientX; }, { passive: true });
     track.addEventListener('touchend', e => {
-      const diff = touchStartX - e.changedTouches[0].clientX;
-      if (Math.abs(diff) > 50) diff > 0 ? goTo(currentIndex + 1) : goTo(currentIndex - 1);
+      const diff = touchX - e.changedTouches[0].clientX;
+      if (Math.abs(diff) > 50) navigate(diff > 0 ? 1 : -1);
     });
 
-    // Init
+    window.addEventListener('resize', () => {
+      SPV = getSPV();
+      totalPages = Math.ceil(realSlides.length / SPV);
+      buildDots();
+      const cloneSlidesBefore = realSlides.length * 2;
+      silentJump(cloneSlidesBefore + pageIndex * SPV);
+    });
+
     applyFilter('all');
   }
 
