@@ -256,9 +256,14 @@ class App {
 
   // ── 3D Tilt Effect ──
   initTiltEffect() {
-    const cards = document.querySelectorAll('.tilt');
-    
+    this.applyTilt(document.querySelectorAll('.tilt'));
+  }
+
+  applyTilt(cards) {
     cards.forEach(card => {
+      if (card.dataset.tiltInit) return;
+      card.dataset.tiltInit = 'true';
+
       card.addEventListener('mousemove', (e) => {
         const rect = card.getBoundingClientRect();
         const x = e.clientX - rect.left;
@@ -313,7 +318,7 @@ class App {
 
     /* ── helpers ── */
     const slideW = () => {
-      const s = track.querySelector('.carousel-slide:not(.carousel-clone)');
+      const s = track.querySelector('.carousel-slide:not(.carousel-clone):not(.hide)');
       return s ? s.getBoundingClientRect().width + 24 : 0;
     };
 
@@ -339,6 +344,12 @@ class App {
 
       realSlides[0].before(...before);
       realSlides[realSlides.length - 1].after(...after);
+
+      // Re-apply tilt effect to new clones
+      const clonedCards = track.querySelectorAll('.carousel-clone .tilt');
+      if (typeof this.applyTilt === 'function') {
+        this.applyTilt(clonedCards);
+      }
     };
 
     /* ── silent jump (no animation) ── */
