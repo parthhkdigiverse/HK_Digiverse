@@ -4,8 +4,19 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 import os
 import smtplib
+import logging
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s",
+    handlers=[
+        logging.FileHandler("app.log"),
+        logging.StreamHandler()
+    ]
+)
 
 from .schemas import ContactRequest
 from .config import settings
@@ -27,13 +38,14 @@ app.add_middleware(
 
 def send_email_task(name: str, email: str, service: str, message: str):
     if not settings.smtp_user or not settings.smtp_password:
-        print("SMTP credentials not configured. Email not sent.")
+        logging.warning("SMTP credentials not configured. Email not sent.")
         return
         
     msg = MIMEMultipart()
     msg['From'] = settings.smtp_user
     msg['To'] = settings.email_to
     msg['Subject'] = f"New Contact Request: {name} - {service}"
+    msg['Reply-To'] = email
     
     body = f"Name: {name}\nEmail: {email}\nService: {service}\n\nMessage:\n{message}"
     msg.attach(MIMEText(body, 'plain'))
@@ -44,13 +56,13 @@ def send_email_task(name: str, email: str, service: str, message: str):
         server.login(settings.smtp_user, settings.smtp_password)
         server.send_message(msg)
         server.quit()
-        print("Email sent successfully.")
+        logging.info("Email sent successfully.")
     except Exception as e:
-        print(f"Failed to send email: {e}")
+        logging.error(f"Failed to send email: {e}")
 
 @app.post("/api/contact")
 async def contact_form(request: ContactRequest, background_tasks: BackgroundTasks):
-    print(f"Received contact request from {request.name} ({request.email})")
+    logging.info(f"Received contact request from {request.name} ({request.email})")
     
     # Run the email sending process in the background
     background_tasks.add_task(
