@@ -34,11 +34,7 @@
   <link rel="stylesheet" href="css/style.css">
 
   <!-- Dynamic Config -->
-  <script>
-    // Dynamically calculate the backend API URL based on the current hostname
-    // Assuming the backend is on the port defined in .env (default 8000)
-    window.API_BASE_URL = `${window.location.protocol}//${window.location.hostname}:8000`;
-  </script>
+  <script src="/env-config.js"></script>
 </head>
 
 <body>

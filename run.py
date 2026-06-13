@@ -74,6 +74,12 @@ def run_frontend():
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
     FRONTEND_DIR = os.path.join(BASE_DIR, "frontend")
     
+    @fe_app.get("/env-config.js")
+    def get_env_config():
+        from fastapi.responses import Response
+        content = f"window.API_BASE_URL = `${{window.location.protocol}}//${{window.location.hostname}}:{settings.backend_port}`;"
+        return Response(content=content, media_type="application/javascript")
+    
     fe_app.mount("/", StaticFiles(directory=FRONTEND_DIR, html=True), name="static")
     
     uvicorn.run(fe_app, host="0.0.0.0", port=settings.frontend_port)
