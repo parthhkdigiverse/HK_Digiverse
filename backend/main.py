@@ -41,6 +41,7 @@ def send_email_task(name: str, email: str, service: str, message: str):
         logging.warning("SMTP credentials not configured. Email not sent.")
         return
         
+    # 1. Email to the owner
     msg = MIMEMultipart()
     msg['From'] = settings.smtp_user
     msg['To'] = settings.email_to
@@ -50,13 +51,35 @@ def send_email_task(name: str, email: str, service: str, message: str):
     body = f"Name: {name}\nEmail: {email}\nService: {service}\n\nMessage:\n{message}"
     msg.attach(MIMEText(body, 'plain'))
     
+    # 2. Auto-reply to the user
+    auto_reply = MIMEMultipart()
+    auto_reply['From'] = settings.smtp_user
+    auto_reply['To'] = email
+    auto_reply['Subject'] = "Thank you for contacting HariKrushn DigiVerse!"
+    
+    auto_reply_body = (
+        f"Dear {name},\n\n"
+        f"Thank you for getting in touch with HariKrushn DigiVerse. We have successfully received your inquiry regarding '{service}'.\n\n"
+        "Our team is currently reviewing your request, and one of our experts will get back to you within the next 24 hours to discuss how we can best support your vision.\n\n"
+        "If you have any immediate questions or additional details to share, please feel free to reply directly to this email.\n\n"
+        "We look forward to speaking with you soon and exploring how we can shape your digital future.\n\n"
+        "Warm regards,\n\n"
+        "The HariKrushn DigiVerse Team\n"
+        "Email: hkdigiverse@gmail.com\n"
+        "Website: https://hkdigiverse.com"
+    )
+    auto_reply.attach(MIMEText(auto_reply_body, 'plain'))
+    
     try:
         server = smtplib.SMTP(settings.smtp_server, settings.smtp_port)
         server.starttls()
         server.login(settings.smtp_user, settings.smtp_password)
-        server.send_message(msg)
+        
+        server.send_message(msg)         # Send to owner
+        server.send_message(auto_reply)  # Send auto-reply to user
+        
         server.quit()
-        logging.info("Email sent successfully.")
+        logging.info("Both admin notification and user auto-reply emails sent successfully.")
     except Exception as e:
         logging.error(f"Failed to send email: {e}")
 

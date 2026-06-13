@@ -1,0 +1,8 @@
+2026-06-13 10:12:30,209 [INFO] Received contact request from Parth Lathiya (parthlathiya2004@gmail.com)
+2026-06-13 10:12:32,631 [ERROR] Failed to send email: (535, b'5.7.8 Username and Password not accepted. For more information, go to\n5.7.8  https://support.google.com/mail/?p=BadCredentials d2e1a72fcca58-8434b049120sm3872618b3a.55 - gsmtp')
+2026-06-13 10:13:15,069 [INFO] Received contact request from Parth Lathiya (parthlathiya2004@gmail.com)
+2026-06-13 10:13:17,592 [ERROR] Failed to send email: (535, b'5.7.8 Username and Password not accepted. For more information, go to\n5.7.8  https://support.google.com/mail/?p=BadCredentials 41be03b00d2f7-c8661b5d505sm3311254a12.1 - gsmtp')
+2026-06-13 10:17:20,931 [INFO] Received contact request from Parth Lathiya (parthlathiya2004@gmail.com)
+2026-06-13 10:17:24,753 [INFO] Email sent successfully.
+2026-06-13 10:18:28,868 [INFO] Received contact request from Parth Lathiya (parthhkdigiverse@gmail.com)
+2026-06-13 10:18:32,655 [INFO] Email sent successfully.
